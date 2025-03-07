@@ -1,0 +1,15 @@
+{
+  "name": "profile-widgets",
+  "version": "1.0.0",
+  "description": "Generate dynamic profile widgets",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "dependencies": {
+    "puppeteer": "^13.0.0"
+  },
+  "author": "Jae Cheesbrough",
+"license": "GPL-3.0"
+}
