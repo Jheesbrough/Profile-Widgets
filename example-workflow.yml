@@ -18,7 +18,7 @@ jobs:
 
       - name: Clone Profile-Widgets repository
         run: |
-          git clone https://github.com/your-username/Profile-Widgets.git
+          git clone https://github.com/jheesbrough/Profile-Widgets.git
           cd Profile-Widgets
           npm install
 
