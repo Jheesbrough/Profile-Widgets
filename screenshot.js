@@ -3,7 +3,12 @@ import fs from 'fs';
 
 export const captureScreenshot = async (url, outputPath, options = {}) => {
   const { viewport = { width: 1920, height: 1080 }, wait = 0 } = options;
-  const browser = await puppeteer.launch({ headless: true });
+
+  const browser = await puppeteer.launch({
+    headless: false,
+    args: ['--no-sandbox'],
+  });
+
   const page = await browser.newPage();
   await page.setViewport(viewport);
   await page.goto(url, { waitUntil: ['domcontentloaded', 'networkidle2'] });
