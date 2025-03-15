@@ -5,7 +5,7 @@ export const captureScreenshot = async (url, outputPath, options = {}) => {
   const { viewport = { width: 1920, height: 1080 }, wait = 0 } = options;
 
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     args: ['--no-sandbox'],
   });
 
