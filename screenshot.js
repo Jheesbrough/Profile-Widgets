@@ -28,6 +28,7 @@ export const captureScreenshot = async (url, outputPath, options = {}) => {
         </svg>
     `;
   fs.writeFileSync(outputPath, svgContent.trim());
+  console.log(`Screenshot saved to ${outputPath}`);
 
   await browser.close();
   return {
