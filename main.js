@@ -10,7 +10,7 @@ const settingsPath = path.join(__dirname, 'settings.json');
 const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
 
 const main = async () => {
-  const folderName = path.join('Widgets', 'screenshots');
+  const folderName = path.join('widgets', 'screenshots');
 
   if (!fs.existsSync(path.join(__dirname, folderName))) {
     fs.mkdirSync(path.join(__dirname, folderName), { recursive: true });
