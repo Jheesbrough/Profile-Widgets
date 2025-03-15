@@ -1,6 +1,5 @@
 name: Generate Profile Widgets
 on:
-  schedule: [{ cron: "0 0 * * *" }]
   workflow_dispatch:
 
 jobs:
@@ -14,7 +13,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "14"
+          node-version: '14'
 
       - name: Clone Profile-Widgets repository
         run: |
@@ -23,14 +22,14 @@ jobs:
           npm install
 
       - name: Run script
-        run: node Profile-Widgets/main.js
+        run: |
+          cd Profile-Widgets
+          npm start
 
       - name: Commit and push changes
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          # Delete everything in the widgets directory
-          rm -rf Profile-Widgets/widgets/*
-          git add Profile-Widgets/widgets/*.svg
+          git add Profile-Widgets/screenshots/widgets/*.svg
           git commit -m "Update widgets"
           git push
