@@ -1,35 +1,67 @@
 name: Generate Profile Widgets
+
 on:
+  schedule:
+    # Every Monday at 06:00 UTC
+    - cron: '0 6 * * 1'
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   generate-widgets:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      # Copy this file into YOUR profile repo at
+      # .github/workflows/generate-profile-widgets.yml
+      - name: Checkout profile repository
+        uses: actions/checkout@v4
+
+      # Profile-Widgets is a PRIVATE repo. The default GITHUB_TOKEN is scoped
+      # to this repository only, so a fine-grained PAT with
+      # "Contents: Read-only" on Profile-Widgets is required here.
+      # Store it in this repo under Settings > Secrets > Actions.
+      - name: Checkout Profile-Widgets
+        uses: actions/checkout@v4
+        with:
+          repository: Jheesbrough/Profile-Widgets
+          path: .profile-widgets
+          token: ${{ secrets.WIDGETS_REPO_TOKEN }}
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: '14'
+          node-version: '22'
 
-      - name: Clone Profile-Widgets repository
-        run: |
-          git clone https://github.com/jheesbrough/Profile-Widgets.git
-          cd Profile-Widgets
-          npm install
+      - name: Install dependencies
+        working-directory: .profile-widgets
+        run: npm install
 
-      - name: Run script
+      # Explicit: some npm versions block puppeteer's postinstall,
+      # which is what downloads the browser.
+      - name: Install Chrome for Puppeteer
+        working-directory: .profile-widgets
+        run: npx puppeteer browsers install chrome
+
+      - name: Generate widgets
+        working-directory: .profile-widgets
+        run: npm start
+
+      - name: Copy widgets into the profile repo
         run: |
-          cd Profile-Widgets
-          npm start
+          rm -rf widgets
+          cp -r .profile-widgets/widgets widgets
 
       - name: Commit and push changes
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add Profile-Widgets/screenshots/widgets/*.svg
-          git commit -m "Update widgets"
-          git push
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add widgets
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update widgets"
+            git push
+          fi
